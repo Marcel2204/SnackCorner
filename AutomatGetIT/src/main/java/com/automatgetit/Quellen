@@ -1,0 +1,77 @@
+Pause()
+https://stackoverflow.com/questions/65438635/javafx-thread-sleep-or-pause-in-actionevent
+
+https://stackoverflow.com/questions/65438635/javafx-thread-sleep-or-pause-in-actionevent#:~:text=onFinished%20event%20handler%3A-,%40FXML%0Apublic%20void%20pressButton(ActionEvent%20event)%20throws%20IOException%2C%20InterruptedException%20%7B%0A%20%20%20%20user,pause.setOnFinished(e%20->%7B%0A%20%20%20%20%20%20%20%20changeScene2(event)%3B%0A%20%20%20%20%7D)%3B%0A%20%20%20%20lLeftBottom.setText(user.getUserInfo())%3B%0A%20%20%20%20pause.play()%3B%0A%7D,-Share
+
+
+https://falconbyte.net/javafx-tutorial-und-einstieg
+
+https://michaelkipp.de/java/22%20gui.html
+
+
+
+https://docs.oracle.com/javase/8/javafx/api/toc.htm
+
+FXML
+https://docs.oracle.com/javase/8/javafx/fxml-tutorial/why_use_fxml.htm#JFXMG137
+
+Fx:id https://docs.oracle.com/javase/8/javafx/fxml-tutorial/jfx2_x-features.htm#:~:text=%3CTextField%20fx%3Aid%3D%22textField%22/%3E
+
+
+Alles Github JavaFX
+https://github.com/jjenkov/javafx-examples
+
+Youtube TheNewBoston JavaFX Playlist
+https://www.youtube.com/playlist?list=PLkY8n-MZcmgRwjYDebUGDcf1PCxT3JA5z
+
+Youtube SceneBuilder
+https://www.youtube.com/watch?v=Z1W4E2d4Yxo
+
+
+Chat GPT Anweisungen/Fragen?
+Wie kann man ein javafx programm für einige sekunden stoppen lassen, bevor es die nächste Anweisung ausführt
+Antwort:
+In einem JavaFX-Programm kannst du eine Verzögerung zwischen Befehlen mit verschiedenen Techniken erreichen. Die besten Möglichkeiten sind:
+
+1. Verwenden von PauseTransition (empfohlen)
+Die beste Methode in JavaFX ist die Nutzung von PauseTransition, weil sie nicht den JavaFX Application Thread blockiert.
+
+java
+Kopieren
+Bearbeiten
+import javafx.animation.PauseTransition;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+public class DelayExample extends Application {
+
+    @Override
+    public void start(Stage primaryStage) {
+        Label label = new Label("Warte 3 Sekunden...");
+        StackPane root = new StackPane(label);
+        Scene scene = new Scene(root, 300, 200);
+
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("PauseTransition Beispiel");
+        primaryStage.show();
+
+        // Erzeuge eine Pause von 3 Sekunden
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(event -> label.setText("Weiter nach der Pause!"));
+        pause.play();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+🔹 Warum ist PauseTransition gut?
+✅ Blockiert den JavaFX-Thread nicht.
+✅ Andere GUI-Elemente bleiben interaktiv.
+✅ Einfach zu nutzen.
+
+Die anderen Möglichkeiten wurden nicht empfohlen
