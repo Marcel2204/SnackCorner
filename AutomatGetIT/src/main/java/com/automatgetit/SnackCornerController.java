@@ -1,13 +1,14 @@
 package com.automatgetit;
 
 import javafx.fxml.FXML;
-
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
-//Wechsel Snack scene zu Hauptscene
 public class SnackCornerController {
 
+    @FXML
+    private Button toSnackCorner;
 
     private Stage stage;
     private Scene mainScene;

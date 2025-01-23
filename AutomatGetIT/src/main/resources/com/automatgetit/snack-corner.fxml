@@ -12,6 +12,6 @@
             <Image url="@../../images/Background.png" />
          </image>
       </ImageView>
-      <Button layoutX="406.0" layoutY="685.0" mnemonicParsing="false" style="-fx-background-color: black;" textFill="WHITE" onAction="#switchToHelloScene"  text="Zum SnackCorner"  />
+      <Button fx:id="BtnSnackCorner" layoutX="406.0" layoutY="685.0" mnemonicParsing="false" style="-fx-background-color: black;" textFill="WHITE" onAction="#switchToHelloScene"  text="Zum SnackCorner"  />
    </children>
 </AnchorPane>

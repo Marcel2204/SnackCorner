@@ -11,68 +11,49 @@ import javafx.scene.layout.StackPane;
 import java.util.HashMap;
 import java.util.Map;
 
+//3 Sekunden Rückgeld anzeigen, dann Label leeren
 import javafx.animation.PauseTransition;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class HelloController {
 
-    //@FXML verknüpft Variable mit Element aus der FXML Datei
-
-    //Anzeige Produktinfo
     @FXML
     private Label displayLabel;
 
-    //Anzeige eingezahltes Geld & Rückgeld
     @FXML
     private Label displayLabel1;
 
-    //Buttons für Zahleneingabe und RÜckgeld, ProduktAusgabe, Geldeinwurf
     @FXML
     private Button btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn71, btn72, Btn50Cent, Btn1Euro, Btn2Euro, BtnChange, BtnPush;
 
-    //Plätze für die Produkte im Automaten "Fenster"
     @FXML
     private StackPane pane00, pane01, pane02, pane10, pane11, pane12, pane20, pane21, pane22,
             pane30, pane31, pane32, pane40, pane41, pane42;
 
-    //Lables für die Produktnummern
     @FXML
     private Label label0, label1, label2, label3, label4, label5, label6, label7, label8, label9, label10, label11, label12, label13, label14;
 
-    //Anzeige Bild bei der Ausgabe des gekauften Produkts
     @FXML
     private ImageView productImageView;
 
-    @FXML
-    private void switchToSnackCorner() {
-        stage.setScene(snackScene);
-    }
-
-    //Preis, Produkt, Label Maps
     private Map<Integer, StackPane> panes;
     private Map<Integer, Double> prices;
     private Map<Integer, Label> productLabels;
     private Map<Integer, Image> productImages;
-    //Produktnummer für Benutzereingabe
     private StringBuilder currentInput = new StringBuilder();
     private double money = 0.0;
     private int Productnumber;
     private double price;
+    private double remainingMoney;
 
     private PauseTransition colorResetPause;
     private int lastHighlightedProduct = -1;
     private int lastBoughtProduct = -1;
 
-    private Stage stage;
-    private Scene snackScene;
-
-
-    //Initialize Methode wird automatisch aufgerufen, wenn der Controller geladen wird
     @FXML
     public void initialize() {
 
-        //Initialisieren der Labels für die Produktnummern
         productLabels = new HashMap<>();
         productLabels.put(0, label0);
         productLabels.put(1, label1);
@@ -90,7 +71,7 @@ public class HelloController {
         productLabels.put(13, label13);
         productLabels.put(14, label14);
 
-        //Produktnummer und Bilder zuordnung
+
         productImages = new HashMap<>();
         productImages.put(0, new Image(getClass().getResource("/images/Elfbar1.jpg").toExternalForm()));
         productImages.put(1, new Image(getClass().getResource("/images/Elfbar2.jpg").toExternalForm()));
@@ -108,7 +89,7 @@ public class HelloController {
         productImages.put(13, new Image(getClass().getResource("/images/FantaPineGrape2.jpg").toExternalForm()));
         productImages.put(14, new Image(getClass().getResource("/images/FantaLimon3.jpg").toExternalForm()));
 
-        //Produkt Platz im Automat
+        // Map für Zahlen und zugehörige StackPanes
         panes = new HashMap<>();
         panes.put(0, pane00);
         panes.put(1, pane01);
@@ -126,7 +107,6 @@ public class HelloController {
         panes.put(13, pane41);
         panes.put(14, pane42);
 
-        //Preise der Produkte
         prices = new HashMap<>();
         prices.put(0, 10.00);
         prices.put(1, 10.00);
@@ -144,49 +124,44 @@ public class HelloController {
         prices.put(13, 3.00);
         prices.put(14, 3.00);
 
-        //Tastenfeld Buttons (0-9)
+        // Event-Handler für die Zahlentasten
         Button[] buttons = {btn0, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9};
         for (Button button : buttons) {
             button.setOnAction(event -> appendNumber(button));
 
         }
-        //Standard Text Anzeige in den gelben Labels
         displayLabel.setText("Produkt wählen");
         displayLabel1.setText("Bitte Geld einwerfen");
-
-        //Hacken Tastenfeld Methoden Aufruf
+        // Event-Handler für den Haken
         btn72.setOnAction(event -> checkMoney());
 
-        // X Tastenfeld Methoden Aufruf
+        // Event-Handler für 'X'
         btn71.setOnAction(event -> resetInput());
 
 
-        // Rückgeld Button Methoden Aufruf
+        // Event-Handler für 'Rückgeld' + 3 Sek Anzeige Rückgeld, danach Feld leeren
         BtnChange.setOnAction(actionEvent -> returnMoney());
 
-        // Buttons Geld hinzufügen
         Btn50Cent.setOnAction(actionEvent -> addMoney(0.50));
         Btn1Euro.setOnAction(actionEvent -> addMoney(1.00));
         Btn2Euro.setOnAction(actionEvent -> addMoney(2.00));
 
-        // Produkt Ausgabe Anzeige Bild
         BtnPush.setOnAction(event -> showLastBoughtProduct());
 
     }
-    //Preis und gewähltes Produkt anzeigen
+
     private void appendNumber(Button button) {
-        // get Zahl von Button Text(Tastenfeld)
+        // Zahl aus dem Button-Text extrahieren
         String number = button.getText();
 
-
+        // Aktuelle Eingabe erweitern (maximal 2 Ziffern)
         if (currentInput.length() < 2) {
             currentInput.append(number);
             Productnumber = Integer.parseInt(currentInput.toString());
 
-            if(prices.containsKey(Productnumber)){  //prüfen ob die eingegebene Nummer in der prices Map existiert
+            if(prices.containsKey(Productnumber)){
                 price = prices.get(Productnumber);
                 displayLabel.setText(Productnumber + " Preis: " + String.format("%.2f", price) + "€");
-
 
                 if(lastHighlightedProduct != -1){
                     resetProductLabelColor(lastHighlightedProduct);
@@ -199,7 +174,6 @@ public class HelloController {
                 colorResetPause = new PauseTransition(Duration.seconds(5));
                 colorResetPause.setOnFinished(event -> resetProductLabelColor(Productnumber));
                 colorResetPause.play();
-
 
                 lastHighlightedProduct = Productnumber;
             }
@@ -217,55 +191,50 @@ public class HelloController {
         }
     }
 
-    //Hintergrund von Zahl von dem Produkt rot färben
     private void highlightProductLabel(int productNumber) {
         Label label = productLabels.get(productNumber);
         if (label != null) {
             label.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;");
         }
     }
-    //Hintergrund von Produkt wieder auf vorherige Farbe setzen
+
     private void resetProductLabelColor(int productNumber) {
         Label label = productLabels.get(productNumber);
         if (label != null) {
             label.setStyle("-fx-text-fill: black; -fx-font-weight: bold; -fx-font-size: 18; -fx-background-color: white;");
         }
     }
-    // Methode Geld Hinzufügen + Anzeige
+
     private void addMoney(double amount) {
         money += amount;
         displayLabel1.setText("Geld: " + String.format("%.2f", money) + "€");
 
     }
 
-    //reset eingegebene Produktnummer und Hintergrund Farbe
     private void resetInput() {
         if (lastHighlightedProduct != -1) {
             resetProductLabelColor(lastHighlightedProduct);
             lastHighlightedProduct = -1;
         }
-        // Eingabe zurücksetzen und Standard Label Text setzen
+        // Eingabe zurücksetzen und Anzeige leeren
         currentInput.setLength(0);
         displayLabel.setText("Produkt wählen");
     }
-
-    //Geld reset und Standard Label Text setzen
     private void resetInput2() {
         money = 0.0;
         displayLabel1.setText("Bitte Geld einwerfen");
     }
 
-    //Prüfen, ob genug Geld eingeworfen wurde und ob ein Produkt gewählt wurde
     private void checkMoney() {
 
-            //prüfen ob ein Button geklickt wurde
+
             if (currentInput.isEmpty()) {
                 displayLabel.setText("Produkt wählen");
                 return;
             }
 
             Productnumber = Integer.parseInt(currentInput.toString());
-            //prüfen Produktnummer nicht in prices
+
             if (!prices.containsKey(Productnumber)) {
                 displayLabel.setText("Produkt nicht gefunden");
                 return;
@@ -275,7 +244,7 @@ public class HelloController {
             displayLabel.setText("Produkt: " + Productnumber + " | Preis: " + String.format("%.2f", price) + "€");
 
             if (money >= price) {
-                double remainingMoney = money - price;
+                remainingMoney = money - price;
                 money = remainingMoney;
 
                 lastBoughtProduct = Productnumber;
@@ -291,7 +260,6 @@ public class HelloController {
             }
 
     }
-    //Ausgabe Bild vom letzten gekauften Produkt und reset
     private void showLastBoughtProduct() {
         if(lastBoughtProduct == -1) {
             displayLabel.setText("Kein Produkt gekauft!");
@@ -316,7 +284,8 @@ public class HelloController {
         }
     }
 
-    //Rückgeld  Anzeige & Ausgabe
+
+
     private void returnMoney() {
         if (money > 0) {
             displayLabel1.setText("Rückgeld: " + String.format("%.2f", money) + "€");
@@ -336,13 +305,17 @@ public class HelloController {
         }
     }
 
+    private Stage stage;
+    private Scene snackScene;
 
-
-    // Szene wechseln
+    // Methode zum Setzen von Stage und Scene
     public void setStageAndScene(Stage stage, Scene snackScene) {
         this.stage = stage;
         this.snackScene = snackScene;
     }
 
-    
+    @FXML
+    private void switchToSnackCorner() {
+        stage.setScene(snackScene); // Wechselt zur SnackCorner-Szene
+    }
 }

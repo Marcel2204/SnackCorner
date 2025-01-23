@@ -36,12 +36,16 @@
                <children>
                   <AnchorPane layoutX="55.0" layoutY="24.0" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: grey;">
                      <children>
-                        <Button fx:id="BtnPush" mnemonicParsing="false" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: grey;" text="↓ PUSH ↓">
+                        <Text layoutX="50.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="↓ PUSH ↓">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Text>
+                        <Button mnemonicParsing="false" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: grey;" text="↓ PUSH ↓">
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font>
                         </Button>
-                        <ImageView fx:id="productImageView" fitHeight="51.0" fitWidth="65.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                   </AnchorPane>
                </children>
